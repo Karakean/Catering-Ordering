@@ -2,12 +2,15 @@ package com.example.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
 @Builder
+@Getter
 @NoArgsConstructor
 public class OrderResponse {
     private Long id;

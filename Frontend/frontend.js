@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const amqp = require('amqplib/callback_api');
+let channel;
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -67,6 +68,77 @@ app.get('/', (req, res) => {
 //     });
 //     res.send('Function executed on the server.');
 // });
+
+// function sendMessageToQueue(req) {
+//     const queue = 'query_queue';
+
+//     return new Promise((resolve, reject) => {
+//         channel.assertQueue(queue, { durable: true });
+
+//         const msg = JSON.stringify(req.body);
+//         const opts = { headers: { 'query_type': 'read_all_caterings' }};
+
+//         channel.sendToQueue(queue, Buffer.from(msg), opts);
+//         console.log("[x] Sent:", msg);
+
+//         console.log('Catering reading request sent');
+
+//         resolve();
+//     });
+// }
+
+// async function consumeData() {
+//     const response_queue = 'query_response_queue';
+
+//     return new Promise((resolve, reject) => {
+//         channel.assertQueue(response_queue);
+
+//         channel.prefetch(1)
+
+//         channel.consume(response_queue, (message) => {
+//             const consumedData = JSON.parse(message.content.toString());
+//             console.log("[x] Received:", consumedData);
+//             channel.ack(message);
+//             resolve(consumedData);
+//         });
+//     });
+// }
+
+app.get('/loadCaterings', (req, res) => {
+    if (!channel) {
+        res.status(500).send("Error: RabbitMQ channel not available");
+        return;
+    }
+
+    const queue = 'query_queue';
+
+    channel.assertQueue(queue, { durable: true });
+
+    const msg = JSON.stringify(req.body);
+    const opts = { headers: { 'query_type': 'read_all_caterings' }};
+
+    channel.sendToQueue(queue, Buffer.from(msg), opts);
+    console.log("[x] Sent:", msg);
+
+    const response_queue = 'query_response_queue'
+
+    var content = '';
+
+    channel.prefetch(1);
+
+    channel.assertQueue(response_queue, {
+        durable: true
+    });
+
+    channel.consume(response_queue, (msg) => {
+        content = msg.content.toString();
+        console.log("[x] Received:", content);
+        channel.ack(msg);
+    });
+
+    console.log(JSON.parse(content));
+    res.json(JSON.parse(content));
+});
 
 app.post('/submitCatering', (req, res) => {
     if (!channel) {

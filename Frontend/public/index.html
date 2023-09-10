@@ -9,11 +9,23 @@
     <h1>Create Order</h1>
 
     <form id="orderForm">
-        <label for="chosenCatering">Chosen Catering:</label>
-        <input type="text" id="chosenCatering" name="chosenCatering" required><br>
+        <br>
+        <h3>Order positions</h2>
+        <div id="orderPositions"></div>
+
+        <br><br>
+        <h3>Purchaser info</h3>
+        <label for="purchaserEmail">Purchaser Email:</label>
+        <input type="email" id="purchaserEmail" name="purchaserEmail" required><br>
+
+        <label for="purchaserPhoneNumber">Purchaser Phone Number:</label>
+        <input type="tel" id="purchaserPhoneNumber" name="purchaserPhoneNumber" required><br>
 
         <label for="purchaserName">Purchaser Name:</label>
         <input type="text" id="purchaserName" name="purchaserName" required><br>
+
+        <label for="purchaserSurname">Purchaser Surname:</label>
+        <input type="text" id="purchaserSurname" name="purchaserSurname" required><br>
 
         <label for="address">Address:</label>
         <input type="text" id="address" name="address" required><br>
@@ -21,7 +33,7 @@
         <label for="preferredDeliveryTime">Preferred Delivery Time:</label>
         <input type="text" id="preferredDeliveryTime" name="preferredDeliveryTime" required><br>
 
-        <input type="submit" value="Submit Order">
+        <button type="submit">Submit Order</button>
     </form>
 
     <button id="loadOrdersButton">Load orders</button>
@@ -43,21 +55,23 @@
         <input type="submit" value="Submit">
     </form>
 
+    <button id="loadCateringsButton">Load caterings</button>
+
     <script>
         function handleOrderSubmit(event) {
             event.preventDefault();
 
             const formData = new FormData(document.getElementById('orderForm'));
 
-            console.log(formData);
-            console.log("XD");
+            const orderPositions = [];
+
+            const orderPositionsDiv = document.getElementById('orderPositions');
+            const inputs = orderPositionsDiv.querySelectorAll('input[type="number"]');
 
             const formObject = {};
             formData.forEach((value, key) => {
                 formObject[key] = value;
             });
-
-            console.log(formObject);
 
             fetch('/submitOrder', {
                 method: 'POST',
@@ -93,13 +107,13 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formObject)
-            })
-            .then(response => response.text())
-            .then(message => {
-                console.log(message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                })
+                .then(response => response.text())
+                .then(message => {
+                    console.log(message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
             });
         }
 
@@ -111,13 +125,41 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                });
+            });
         }
 
-        // Add an event listener to the form submission
+        function loadCaterings() {
+            fetch('/loadCaterings')
+                .then(response => response.json())
+                .then(caterings => {
+                    const orderPositionsDiv = document.getElementById('orderPositions');
+
+                    caterings.forEach(catering => {
+                        const label = document.createElement('label');
+                        label.textContent = catering.name;
+
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.min = 0;
+                        input.value = 0;
+                        input.dataset.cateringId = catering.id;
+
+                        label.appendChild(input);
+                        orderPositionsDiv.appendChild(label);
+                        const br = document.createElement('br');
+                        orderPositionsDiv.appendChild(br);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCaterings);
         document.getElementById('orderForm').addEventListener('submit', handleOrderSubmit);
         document.getElementById('loadOrdersButton').addEventListener('click', loadOrders);
         document.getElementById('cateringForm').addEventListener('submit', handleCateringSubmit);
+        document.getElementById('loadCateringsButton').addEventListener('click', loadCaterings);
     </script>
 </body>
 </html>

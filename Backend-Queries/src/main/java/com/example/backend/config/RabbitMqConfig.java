@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class QueuesConfig {
+public class RabbitMqConfig {
     public static final String EVENT_QUEUE_NAME = "event_queue";
     public static final String QUERY_QUEUE_NAME = "query_queue";
 

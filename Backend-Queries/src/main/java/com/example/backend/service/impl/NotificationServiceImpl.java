@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.backend.config.QueuesConfig.QUERY_RESPONSE_QUEUE_NAME;
+import static com.example.backend.config.RabbitMqConfig.QUERY_RESPONSE_QUEUE_NAME;
 
 @AllArgsConstructor
 @Service

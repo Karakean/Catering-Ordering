@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.example.backend.config.QueuesConfig.EVENT_QUEUE_NAME;
+import static com.example.backend.config.RabbitMqConfig.EVENT_QUEUE_NAME;
 
 @AllArgsConstructor
 @Component
