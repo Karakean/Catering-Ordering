@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 @AllArgsConstructor
 @Service
@@ -20,30 +21,34 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     private String createMailContentFromOrderInfo(OrderEmailDto orderInfo) {
         StringBuilder orderedCateringsTextBuilder = new StringBuilder();
+        DecimalFormat df = new DecimalFormat("#.##");
         orderInfo.getOrderPositions().forEach
                 (catering -> orderedCateringsTextBuilder.append(String.format(
                         """
                             Catering: %s
-                            Zamówionych sztuk: %d
-                            Kalorie (na sztukę): %d
-                            Cena za miesiąc (na sztukę): %f
-                            Cena za miesiąc (łącznie za rodzaj): %f
+                            Quantity: %d
+                            Calories (per one catering): %d
+                            Price per month (per one catering): %s
+                            Price per month (combined per catering type): %s
                         """,
                         catering.getCateringName(),
                         catering.getQuantity(),
                         catering.getCalories(),
-                        catering.getPricePerMonth(),
-                        calculationService.calculatePricePerMonthPerOrderPosition(catering)))
-                        .append("\n\n"));
+                        df.format(catering.getPricePerMonth()),
+                        df.format(calculationService.calculatePricePerMonthPerOrderPosition(catering))))
+                        .append("\n"));
         String orderedCateringsText = orderedCateringsTextBuilder.toString();
-        return "Zamówione cateringi:\n" +
+        return  "Hello " + orderInfo.getPurchaserName() +
+                "!\nThanks for ordering our caterings. " +
+                "Here's quick summary of your order:" +
+                "\nOrdered caterings:\n\n" +
                 orderedCateringsText +
-                "\nEmail: " + orderInfo.getPurchaserEmail() +
-                "\nImię: " + orderInfo.getPurchaserName() +
-                "\nNazwisko: " + orderInfo.getPurchaserSurname() +
-                "\nAdres dostawy: " + orderInfo.getAddress() +
-                "\nPreferowany czas dostawy: " + orderInfo.getPreferredDeliveryTime() +
-                "\nCena za miesiąc (łącznie za wszystko): " + calculationService.calculatePricePerMonthPerOrder(orderInfo);
+                "Email: " + orderInfo.getPurchaserEmail() +
+                "\nName: " + orderInfo.getPurchaserName() +
+                "\nSurname: " + orderInfo.getPurchaserSurname() +
+                "\nDelivery address: " + orderInfo.getAddress() +
+                "\nPreferred delivery time: " + orderInfo.getPreferredDeliveryTime() +
+                "\nPrice per month (combined): " + df.format(calculationService.calculatePricePerMonthPerOrder(orderInfo));
     }
 
     @Override
@@ -51,10 +56,10 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom("mn.dev.184865@gmail.com");
         mail.setTo(orderInfo.getPurchaserEmail());
-        mail.setSubject("Catering - Zamowienie nr. ");
+        mail.setSubject("Catering - Order No. " + orderInfo.getOrderId());
         mail.setText(createMailContentFromOrderInfo(orderInfo));
         System.out.println(createMailContentFromOrderInfo(orderInfo));
-        //mailSender.send(mail);
+        mailSender.send(mail);
     }
 
     @Override

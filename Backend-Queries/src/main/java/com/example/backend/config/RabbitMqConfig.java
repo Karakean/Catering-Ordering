@@ -9,7 +9,7 @@ public class RabbitMqConfig {
     public static final String EVENT_QUEUE_NAME = "event_queue";
     public static final String QUERY_QUEUE_NAME = "query_queue";
 
-    public static final String QUERY_RESPONSE_QUEUE_NAME = "query_response_queue";
+    //public static final String QUERY_RESPONSE_QUEUE_NAME = "query_response_queue";
 
     @Bean
     public Queue eventQueue() {
@@ -21,8 +21,8 @@ public class RabbitMqConfig {
         return new Queue(QUERY_QUEUE_NAME);
     }
 
-    @Bean
-    public Queue queryResponseQueue() {
-        return new Queue(QUERY_RESPONSE_QUEUE_NAME);
-    }
+//    @Bean
+//    public Queue queryResponseQueue() {
+//        return new Queue(QUERY_RESPONSE_QUEUE_NAME);
+//    }
 }

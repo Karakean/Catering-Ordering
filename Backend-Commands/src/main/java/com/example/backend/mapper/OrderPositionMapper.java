@@ -6,6 +6,7 @@ import com.catering.commons.exception.CateringNotFoundException;
 import com.example.backend.domain.entity.Catering;
 import com.example.backend.domain.entity.OrderPosition;
 import com.example.backend.domain.entity.Order;
+import com.example.backend.dto.OrderPositionCommandDto;
 import com.example.backend.service.interfaces.CateringService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,13 @@ import org.springframework.stereotype.Component;
 public class OrderPositionMapper {
     private final CateringService cateringService;
 
-    public OrderPosition mapEventDtoToEntity(OrderPositionEventDto orderPositionEventDto, Catering catering, Order order) throws CateringNotFoundException {
+    public OrderPosition mapCommandDtoToEntity(OrderPositionCommandDto commandDto) throws CateringNotFoundException{
+        Catering catering = cateringService.findById(commandDto.getCateringId())
+                .orElseThrow(() -> new CateringNotFoundException("There is no catering with such id!"));
+
         return OrderPosition.builder()
+                .quantity(commandDto.getQuantity())
                 .catering(catering)
-//                .catering(cateringService.findById(orderPositionDto.getCateringId())
-//                        .orElseThrow(() -> new CateringNotFoundException("There is no catering with such id!")))
-                .quantity(orderPositionEventDto.getQuantity())
-                .order(order)
                 .build();
     }
 

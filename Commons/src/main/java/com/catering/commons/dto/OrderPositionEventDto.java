@@ -2,18 +2,16 @@ package com.catering.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.io.Serializable;
 
 @AllArgsConstructor
 @Builder(access = AccessLevel.PUBLIC)
 @Getter
+@NoArgsConstructor
 public class OrderPositionEventDto implements Serializable {
-    private final Long orderPositionId;
-    private final Long cateringId;
-    private final int quantity;
+    private Long orderPositionId;
+    private Long cateringId;
+    private int quantity;
 }

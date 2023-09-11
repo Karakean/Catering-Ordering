@@ -4,3 +4,4 @@ docker run --name read_database -p 5433:5432 -e POSTGRES_USER=username_read -e P
 
 npm install express
 npm install amqplib
+npm install ws

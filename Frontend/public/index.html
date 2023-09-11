@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Node.js Frontend Server</title>
+    <title>Node.js Server</title>
 </head>
 <body>
+    <button id="toggleViewButton">Go to the admin panel</button>
     <h1>Create Order</h1>
 
     <form id="orderForm">
@@ -36,130 +37,6 @@
         <button type="submit">Submit Order</button>
     </form>
 
-    <button id="loadOrdersButton">Load orders</button>
-
-    <h1>Create Catering</h1>
-    <form id="cateringForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" required><br><br>
-
-        <label for="calories">Calories:</label>
-        <input type="number" id="calories" name="calories" required><br><br>
-
-        <label for="pricePerMonth">Price Per Month:</label>
-        <input type="number" step="0.01" id="pricePerMonth" name="pricePerMonth" required><br><br>
-
-        <input type="submit" value="Submit">
-    </form>
-
-    <button id="loadCateringsButton">Load caterings</button>
-
-    <script>
-        function handleOrderSubmit(event) {
-            event.preventDefault();
-
-            const formData = new FormData(document.getElementById('orderForm'));
-
-            const orderPositions = [];
-
-            const orderPositionsDiv = document.getElementById('orderPositions');
-            const inputs = orderPositionsDiv.querySelectorAll('input[type="number"]');
-
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
-            });
-
-            fetch('/submitOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formObject)
-            })
-            .then(response => response.text())
-            .then(message => {
-                console.log(message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        function handleCateringSubmit(event) {
-            event.preventDefault();
-
-            const formData = new FormData(document.getElementById('cateringForm'));
-
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
-            });
-
-            console.log(formObject);
-
-            fetch('/submitCatering', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formObject)
-                })
-                .then(response => response.text())
-                .then(message => {
-                    console.log(message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-            });
-        }
-
-        function loadOrders() {
-            fetch('/loadOrders')
-                .then(response => response.text())
-                .then(message => {
-                    console.log(message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-            });
-        }
-
-        function loadCaterings() {
-            fetch('/loadCaterings')
-                .then(response => response.json())
-                .then(caterings => {
-                    const orderPositionsDiv = document.getElementById('orderPositions');
-
-                    caterings.forEach(catering => {
-                        const label = document.createElement('label');
-                        label.textContent = catering.name;
-
-                        const input = document.createElement('input');
-                        input.type = 'number';
-                        input.min = 0;
-                        input.value = 0;
-                        input.dataset.cateringId = catering.id;
-
-                        label.appendChild(input);
-                        orderPositionsDiv.appendChild(label);
-                        const br = document.createElement('br');
-                        orderPositionsDiv.appendChild(br);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', loadCaterings);
-        document.getElementById('orderForm').addEventListener('submit', handleOrderSubmit);
-        document.getElementById('loadOrdersButton').addEventListener('click', loadOrders);
-        document.getElementById('cateringForm').addEventListener('submit', handleCateringSubmit);
-        document.getElementById('loadCateringsButton').addEventListener('click', loadCaterings);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

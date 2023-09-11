@@ -12,11 +12,9 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.utils.SerializationUtils;
 import org.springframework.stereotype.Service;
 
-import static com.example.backend.config.QueuesConfig.EMAIL_QUEUE_NAME;
-import static com.example.backend.config.QueuesConfig.EVENT_QUEUE_NAME;
+import static com.example.backend.config.RabbitMqConfig.*;
 
 @AllArgsConstructor
 @Service
@@ -47,5 +45,16 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendEmail(Order createdOrder) throws JsonProcessingException {
         String jsonMessage = new ObjectMapper().writeValueAsString(orderMapper.mapEntityToEmailDto(createdOrder));
         rabbitTemplate.convertAndSend(EMAIL_QUEUE_NAME, jsonMessage.getBytes());
+    }
+
+    @Override
+    public void sendResponse(String messageContent, String userId) {
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setHeader("user_id", userId);
+        Message message = MessageBuilder
+                .withBody(messageContent.getBytes())
+                .andProperties(messageProperties)
+                .build();
+        rabbitTemplate.convertAndSend(COMMAND_RESPONSE_QUEUE_NAME, message);
     }
 }

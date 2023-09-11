@@ -1,10 +1,7 @@
 package com.example.backend.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @Builder
@@ -23,5 +20,6 @@ public class OrderPosition {
     private Catering catering;
 
     @ManyToOne
+    @Setter
     private Order order;
 }

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @Getter
 @NoArgsConstructor
-public class CateringResponse implements Serializable {
+public class CateringResponse {
     private Long id;
     private String name;
     private String description;

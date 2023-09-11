@@ -23,7 +23,7 @@ public class Order {
     private String preferredDeliveryTime;
     //private StatusType status;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Setter
     private List<OrderPosition> orderPositions;
 }

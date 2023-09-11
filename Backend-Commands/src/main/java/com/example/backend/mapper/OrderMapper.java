@@ -2,6 +2,7 @@ package com.example.backend.mapper;
 
 import com.catering.commons.domain.event.OrderCreatedEvent;
 import com.catering.commons.dto.OrderEmailDto;
+import com.catering.commons.exception.CateringNotFoundException;
 import com.example.backend.command.create.CreateOrderCommand;
 import com.example.backend.domain.entity.Order;
 import lombok.AllArgsConstructor;
@@ -23,15 +24,20 @@ public class OrderMapper {
 //                        .orElseThrow(() -> new ClientNotFoundException("There is no client with such id!")))
 //                .build();
 //    }
-    public Order mapCommandToEntity(CreateOrderCommand command) {
-        return Order.builder()
+    public Order mapCommandToEntity(CreateOrderCommand command) throws CateringNotFoundException {
+        Order order = Order.builder()
                 .purchaserEmail(command.getPurchaserEmail())
                 .purchaserPhoneNumber(command.getPurchaserPhoneNumber())
                 .purchaserName(command.getPurchaserName())
                 .purchaserSurname(command.getPurchaserSurname())
                 .address(command.getAddress())
                 .preferredDeliveryTime(command.getPreferredDeliveryTime())
+                .orderPositions(command.getOrderPositions().stream()
+                        .map(orderPositionMapper::mapCommandDtoToEntity)
+                        .collect(Collectors.toList()))
                 .build();
+        order.getOrderPositions().forEach(position -> position.setOrder(order));
+        return order;
     }
 
 //    public OrderCreatedEvent mapEntityToEvent(Order order) {
