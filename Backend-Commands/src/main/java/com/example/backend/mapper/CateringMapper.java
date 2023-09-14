@@ -4,7 +4,6 @@ import com.catering.commons.domain.event.CateringCreatedEvent;
 import com.example.backend.domain.entity.Catering;
 
 import com.example.backend.command.create.CreateCateringCommand;
-//import com.example.backend.domain.event.CateringCreatedEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

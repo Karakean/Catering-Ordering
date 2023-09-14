@@ -1,0 +1,24 @@
+.order-position {
+    border: 1px solid black;
+    width: 300px;
+}
+
+.admin-order-info {
+    border: 1px solid black;
+    width: 450px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.admin-order-position-info {
+    padding-left: 100px;
+    border: 1px solid black;
+    width: 350px;
+    margin: 0;
+}
+
+.admin-catering-info {
+    border: 1px solid black;
+    width: 450px;
+    margin-bottom: 30px;
+}

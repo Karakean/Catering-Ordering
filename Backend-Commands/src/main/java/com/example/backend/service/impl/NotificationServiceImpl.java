@@ -8,6 +8,7 @@ import com.example.backend.service.interfaces.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
@@ -22,17 +23,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final RabbitTemplate rabbitTemplate;
     private final OrderMapper orderMapper;
 
-//    public void sendEvent(AbstractEvent event, EventType eventType) {
-//        MessageProperties messageEventProperties = new MessageProperties();
-//        messageEventProperties.setHeader("event_type", "CREATE_CATERING"); //TODO eventType.getDisplayName());
-//        byte[] eventSerialized = SerializationUtils.serialize(event);
-//        Message eventMessage = MessageBuilder.withBody(eventSerialized)
-//                .andProperties(messageEventProperties)
-//                .build();
-//        rabbitTemplate.convertAndSend(EVENT_QUEUE_NAME, eventMessage);
-//    }
-
-    public void sendEvent(AbstractEvent event, EventType eventType) throws JsonProcessingException {
+    @Override
+    public void sendEvent(AbstractEvent event, EventType eventType) throws JsonProcessingException, AmqpException {
         MessageProperties messageEventProperties = new MessageProperties();
         messageEventProperties.setHeader("event_type", eventType.getDisplayName());
         String eventJson = new ObjectMapper().writeValueAsString(event);
@@ -42,13 +34,14 @@ public class NotificationServiceImpl implements NotificationService {
         rabbitTemplate.convertAndSend(EVENT_QUEUE_NAME, eventMessage);
     }
 
-    public void sendEmail(Order createdOrder) throws JsonProcessingException {
+    @Override
+    public void sendEmail(Order createdOrder) throws JsonProcessingException, AmqpException {
         String jsonMessage = new ObjectMapper().writeValueAsString(orderMapper.mapEntityToEmailDto(createdOrder));
         rabbitTemplate.convertAndSend(EMAIL_QUEUE_NAME, jsonMessage.getBytes());
     }
 
     @Override
-    public void sendResponse(String messageContent, String userId) {
+    public void sendResponse(String messageContent, String userId) throws AmqpException {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setHeader("user_id", userId);
         Message message = MessageBuilder

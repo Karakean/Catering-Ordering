@@ -1,0 +1,84 @@
+version: '3.9'
+services:
+  rabbitmq:
+    build: ./Rabbitmq/
+    ports: 
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  write_database:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${WRITE_DB_USERNAME}
+      POSTGRES_PASSWORD: ${WRITE_DB_PASSWORD}
+      POSTGRES_DB: ${WRITE_DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "${WRITE_DB_ROOT_USER}", "-d", "${WRITE_DB_NAME}"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+  read_database:
+    image: postgres
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: ${READ_DB_USERNAME}
+      POSTGRES_PASSWORD: ${READ_DB_PASSWORD}
+      POSTGRES_DB: ${READ_DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-p", "5433", "-U", "${READ_DB_ROOT_USER}", "-d", "${READ_DB_NAME}"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+  command-service:
+    build: ./Backend-Commands/
+    env_file:
+      .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      write_database:
+        condition: service_healthy
+  query-service:
+    build: ./Backend-Queries/
+    env_file:
+      .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      read_database:
+        condition: service_healthy
+  email-service:
+    build: ./Email-Service/
+    env_file:
+      .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  gateway-server:
+    build: ./Server/
+    ports:
+      - 80:80
+      - 7071:7071
+    env_file:
+      .env
+    depends_on:
+      command-service:
+        condition: service_started
+      query-service:
+        condition: service_started
+      email-service:
+        condition: service_started
+
+
+  
+
+

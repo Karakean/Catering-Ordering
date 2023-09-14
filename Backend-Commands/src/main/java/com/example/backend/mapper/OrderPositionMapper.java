@@ -5,7 +5,6 @@ import com.catering.commons.dto.OrderPositionEventDto;
 import com.catering.commons.exception.CateringNotFoundException;
 import com.example.backend.domain.entity.Catering;
 import com.example.backend.domain.entity.OrderPosition;
-import com.example.backend.domain.entity.Order;
 import com.example.backend.dto.OrderPositionCommandDto;
 import com.example.backend.service.interfaces.CateringService;
 import lombok.AllArgsConstructor;

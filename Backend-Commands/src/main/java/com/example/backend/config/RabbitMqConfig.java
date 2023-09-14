@@ -16,19 +16,4 @@ public class RabbitMqConfig {
         return new Queue(COMMAND_QUEUE_NAME);
     }
 
-//    @Bean
-//    public Queue commandResponseQueue() {
-//        return new Queue(COMMAND_RESPONSE_QUEUE_NAME);
-//    }
-
-//    @Bean
-//    public Queue eventQueue() {
-//        return new Queue(EVENT_QUEUE_NAME);
-//    }
-
-//    @Bean
-//    public Queue emailQueue() {
-//        return new Queue(EMAIL_QUEUE_NAME);
-//    }
-
 }

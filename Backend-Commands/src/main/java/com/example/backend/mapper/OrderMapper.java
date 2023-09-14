@@ -14,16 +14,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderMapper {
     private final OrderPositionMapper orderPositionMapper;
-    //private final ClientService clientService;
 
-//    public Order mapCommandToEntity(CreateOrderCommand command) throws ClientNotFoundException {
-//        return Order.builder()
-//                .preferredDeliveryTime(command.getPreferredDeliveryTime())
-//                .status(StatusType.PENDING)
-//                .client(clientService.findById(command.getClientId())
-//                        .orElseThrow(() -> new ClientNotFoundException("There is no client with such id!")))
-//                .build();
-//    }
     public Order mapCommandToEntity(CreateOrderCommand command) throws CateringNotFoundException {
         Order order = Order.builder()
                 .purchaserEmail(command.getPurchaserEmail())
@@ -40,15 +31,6 @@ public class OrderMapper {
         return order;
     }
 
-//    public OrderCreatedEvent mapEntityToEvent(Order order) {
-//        return OrderCreatedEvent.builder()
-//                .orderId(order.getId())
-//                //.purchaserName(order.getPurchaserName())
-//                .chosenCatering(order.getChosenCatering())
-//                .address(order.getAddress())
-//                .preferredDeliveryTime(order.getPreferredDeliveryTime())
-//                .build();
-//    }
     public OrderCreatedEvent mapEntityToEvent(Order order) {
         return OrderCreatedEvent.builder()
                 .orderId(order.getId())

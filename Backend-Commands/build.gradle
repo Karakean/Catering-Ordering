@@ -20,9 +20,6 @@ configurations {
 repositories {
     mavenCentral()
     mavenLocal()
-//    maven {
-//        url '../commons-artifacts'
-//    }
 }
 
 dependencies {

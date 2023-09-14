@@ -4,12 +4,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum EventType implements Serializable {
+public enum EventType {
     CREATE_CATERING("CREATE_CATERING"),
     CREATE_ORDER("CREATE_ORDER"),
     UPDATE_CATERING("UPDATE_CATERING"),
